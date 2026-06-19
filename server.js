@@ -9,7 +9,6 @@ const port = process.env.PORT || 8080;
 app.use(cors());
 app.use(express.json());
 
-// Endpoint Root untuk merespons ping/testConnection dari Frontend
 app.get("/", (req, res) => {
   res.json({
     status: "success",
@@ -17,7 +16,7 @@ app.get("/", (req, res) => {
   });
 });
 
-// Endpoint Wajib Pertama
+// Endpoint health
 app.get("/health", async (req, res) => {
   try {
     await pool.query("SELECT 1");
@@ -26,7 +25,7 @@ app.get("/health", async (req, res) => {
       message: "Backend is running",
       database: "connected",
       student: {
-        name: "Muhammad Habib", // Jangan lupa ubah ini
+        name: "Muhammad Habib",
         nim: "2411522024",
       },
     });
@@ -36,26 +35,25 @@ app.get("/health", async (req, res) => {
       message: "Backend is running, but database is not connected",
       database: "disconnected",
       student: {
-        name: "Muhammad Habib", // Jangan lupa ubah ini
+        name: "Muhammad Habib",
         nim: "2411522024",
       },
     });
   }
 });
 
-// Endpoint /schema yang sudah diperbaiki strukturnya
 app.get("/schema", (req, res) => {
   res.json({
     student: {
-      name: "Muhammad Habib", // Sesuaikan dengan nama Bos
-      nim: "2311523001", // Sesuaikan dengan NIM Bos
+      name: "Muhammad Habib",
+      nim: "2411522024",
     },
     resource: {
       name: "vehicles",
       label: "Data Kendaraan",
       description: "Aplikasi untuk mengelola data kendaraan",
     },
-    // fields dikeluarkan dari dalam resource
+
     fields: [
       {
         name: "merk",
@@ -93,7 +91,7 @@ app.get("/schema", (req, res) => {
         showInTable: true,
       },
     ],
-    // endpoints dikeluarkan dari dalam resource
+
     endpoints: {
       list: "/vehicles",
       detail: "/vehicles/{id}",
@@ -109,8 +107,6 @@ app.get("/vehicles", async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM vehicles");
 
-    // Frontend asisten berekspektasi ada properti 'items',
-    // jadi kita sesuaikan struktur JSON-nya di sini.
     res.json({
       status: "success",
       message: "Data retrieved successfully",
